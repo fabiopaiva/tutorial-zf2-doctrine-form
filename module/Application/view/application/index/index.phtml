@@ -1,0 +1,49 @@
+<a
+    class="btn btn-sm btn-primary pull-right"
+    href="<?php
+
+echo $this->url('tutorial', array(
+    'action' => 'adicionar'
+));
+?>"> <span class="glyphicon glyphicon-plus"></span> Adicionar
+</a>
+<h3>Clientes</h3>
+
+<table class="table table-bordered table-condensed">
+	<tr>
+		<th>Nome</th>
+		<th>Plano</th>
+		<th>Editar</th>
+		<th>Remover</th>
+	</tr>
+	<?php foreach($clientes as $cliente):?>
+        <tr>
+		<td>
+        <?php echo  $cliente->getNome();?>
+        </td>
+		<td>
+        <?php if($cliente->getPlano() !== null): ?>
+            <?php echo $cliente->getPlano()->getNome();?>
+        <?php endif?>
+        </td>
+		<td><a
+			href="<?php
+    
+    echo $this->url('tutorial', array(
+        'action' => 'editar',
+        'id' => $cliente->getId()
+    ));
+    ?>"> <span class="glyphicon glyphicon-edit"></span> Editar
+		</a></td>
+		<td><a onclick="return confirm('Deseja remover?')"
+			href="<?php
+    
+    echo $this->url('tutorial', array(
+        'action' => 'remover',
+        'id' => $cliente->getId()
+    ));
+    ?>"> <span class="glyphicon glyphicon-edit"></span> Remover
+		</a></td>
+	</tr>
+    <?php endforeach;?>
+</table>
