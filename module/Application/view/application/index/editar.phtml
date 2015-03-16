@@ -1,5 +1,8 @@
 <h3>Editar Cliente</h3>
 <?php echo $this->form()->openTag($form);?>
 <?php echo $this->formCollection($form);?>
+<?php if($cliente->getFoto()): ?> Arquivo atual:
+<?php echo $cliente->getFoto();?> <br/>
+<?php endif;?>
 <input type="submit" value="Atualizar" class="btn btn-sm btn-primary" />
 <?php echo $this->form()->closeTag($form);?>

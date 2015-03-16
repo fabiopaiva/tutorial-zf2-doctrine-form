@@ -31,10 +31,18 @@ class IndexController extends AbstractActionController
             'om' => $this->getServiceLocator()->get('Doctrine\ORM\EntityManager')
         ));
         if ($this->getRequest()->isPost()) {
-            $form->setData($this->getRequest()
-                ->getPost());
+            $form->setData(array_merge_recursive($this->getRequest()
+                ->getPost()
+                ->toArray(), $this->getRequest()
+                ->getFiles()
+                ->toArray()));
             if ($form->isValid()) {
                 $data = $form->getData();
+                if (is_array($data->getFoto()) && ! empty($data->getFoto()['tmp_name'])) {
+                    $data->setFoto($data->getFoto()['tmp_name']);
+                } else {
+                    $data->setFoto("");
+                }
                 $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager')
                     ->persist($data);
@@ -60,12 +68,26 @@ class IndexController extends AbstractActionController
             ->get('Doctrine\ORM\EntityManager')
             ->getRepository('Application\Entity\Cliente')
             ->findOneById($id);
+        $fotoAtual = $cliente->getFoto();
         $form->bind($cliente);
+        
         if ($this->getRequest()->isPost()) {
-            $form->setData($this->getRequest()
-                ->getPost());
+            $form->setData(array_merge_recursive($this->getRequest()
+                ->getPost()
+                ->toArray(), $this->getRequest()
+                ->getFiles()
+                ->toArray()));
             if ($form->isValid()) {
                 $data = $form->getData();
+                if (is_array($data->getFoto()) && ! empty($data->getFoto()['tmp_name'])) {
+                    if (is_file($fotoAtual)) {
+                        unlink($fotoAtual);
+                    }
+                    $data->setFoto($data->getFoto()['tmp_name']);
+                } else {
+                    $data->setFoto($fotoAtual);
+                }
+                
                 $this->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager')
                     ->persist($data);
@@ -77,7 +99,8 @@ class IndexController extends AbstractActionController
         }
         $form->prepare();
         return array(
-            'form' => $form
+            'form' => $form,
+            'cliente' => $cliente
         );
     }
 
@@ -88,6 +111,9 @@ class IndexController extends AbstractActionController
             ->get('Doctrine\ORM\EntityManager')
             ->getRepository('Application\Entity\Cliente')
             ->findOneById($id);
+        if (is_file($cliente->getFoto())) {
+            unlink($cliente->getFoto());
+        }
         $this->getServiceLocator()
             ->get('Doctrine\ORM\EntityManager')
             ->remove($cliente);

@@ -23,12 +23,16 @@ class Cliente
 
     /**
      *
-     * @var Plano 
-     * @ORM\ManyToOne(targetEntity="Plano")
-     * @ORM\JoinColumn(name="plano_id", referencedColumnName="id")
+     * @var Plano @ORM\ManyToOne(targetEntity="Plano")
+     *      @ORM\JoinColumn(name="plano_id", referencedColumnName="id")
      *     
      */
     protected $plano;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $foto;
 
     public function getId()
     {
@@ -60,6 +64,17 @@ class Cliente
     public function setPlano(Plano $plano = null)
     {
         $this->plano = $plano;
+        return $this;
+    }
+
+    public function getFoto()
+    {
+        return $this->foto;
+    }
+
+    public function setFoto($foto)
+    {
+        $this->foto = $foto;
         return $this;
     }
 }

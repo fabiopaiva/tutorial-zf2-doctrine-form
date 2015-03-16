@@ -40,13 +40,45 @@ class Cliente extends Form
             'attributes' => array(
                 'class' => 'form-control input-sm'
             )
+        ))
+            ->add(array(
+            'name' => 'foto',
+            'type' => 'file',
+            'options' => array(
+                'label' => 'Foto'
+            ),
+            'attributes' => array(
+                'class' => 'form-control input-sm'
+            )
         ));
-            
-            $filter = new InputFilter();
-            $filter->add(array(
-                'name' => 'nome',
-                'required' => true
-            ));
-            $this->setInputFilter($filter);
+        
+        $filter = new InputFilter();
+        $filter->add(array(
+            'name' => 'nome',
+            'required' => true
+        ))->add(array(
+            'name' => 'foto',
+            'required' => false,
+            'validators' => array(
+                array(
+                    'name' => 'Zend\Validator\File\MimeType',
+                    'options' => array(
+                        'mimeType' => 'image'
+                    )
+                )
+            ),
+            'filters' => array(
+                array(
+                    'name' => 'Zend\Filter\File\RenameUpload',
+                    'options' => array(
+                        'target' => 'data/uploads',
+                        'randomize' => true,
+                        'use_upload_extension' => true,
+                        'use_upload_name' => true
+                    )
+                )
+            )
+        ));
+        $this->setInputFilter($filter);
     }
 }
